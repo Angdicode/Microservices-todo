@@ -1,0 +1,59 @@
+version: '3.8'
+services:
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:8080"
+    environment:
+      - AUTH_API_ADDRESS=http://auth-api:8081
+      - TODOS_API_ADDRESS=http://todos-api:8082
+    depends_on:
+      - todos-api
+      - users-api
+      - auth-api
+
+  auth-api:
+    build: ./auth-api
+    ports:
+      - "8081:8081"
+    environment:
+      - AUTH_API_PORT=8081
+      - USERS_API_ADDRESS=http://users-api:8083
+      - JWT_SECRET=PRF_TOKEN
+    depends_on:
+      - users-api
+
+  todos-api:
+    build: ./todos-api
+    ports:
+      - "8082:8082"
+    environment:
+      - JWT_SECRET=PRF_TOKEN
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_CHANNEL=log_channel
+      - AUTH_API_ADDRESS=http://auth-api:8081
+    depends_on:
+      - redis
+      - auth-api
+
+  users-api:
+    build: ./users-api
+    ports:
+      - "8083:8083"
+    environment:
+      - JWT_SECRET=PRF_TOKEN
+
+  log-message-processor:
+    build: ./log-message-processor
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_CHANNEL=log_channel
+    depends_on:
+      - redis
