@@ -2,7 +2,7 @@
 
 This project is a TODO application built with a **microservice architecture**. Each service is written in a different language or framework (Go, Python, Vue.js, Java and Node.js), so it is a good example of a polyglot system.
 
-> **Important:** the microservices themselves already existed (they come from the PRFT DevOps training project). My work in this repository was to **containerize every service** by writing the `Dockerfile` per service and a `docker-compose.yml` file that runs the whole system with a single command.
+> **Important:** the microservices themselves already existed. My work in this repository was to **containerize every service** by writing the `Dockerfile` per service and a `docker-compose.yml` file that runs the whole system with a single command.
 
 ---
 
